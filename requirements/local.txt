@@ -1,0 +1,2 @@
+-r base.txt
+pre-commit==v2.8.1
