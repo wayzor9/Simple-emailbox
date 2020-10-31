@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class EmailAppConfig(AppConfig):
+class NotificationsConfig(AppConfig):
     name = "notifications"
