@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import Mailbox, Template, Email
+from .tasks import send_email_task
 
 
 class MailboxSerializer(serializers.ModelSerializer):
@@ -39,5 +41,9 @@ class EmailSerializer(serializers.ModelSerializer):
             "cc",
             "bcc",
             "reply_to",
-            "sent_date",
         )
+
+    def create(self, validated_data):
+        obj = super().create(validated_data)
+        send_email_task.delay(obj.pk)
+        return obj

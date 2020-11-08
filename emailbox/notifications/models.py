@@ -1,7 +1,10 @@
-from django.contrib.postgres.fields import ArrayField
-from django.db import models
-
 import uuid
+
+from django.contrib.postgres.fields import ArrayField
+from django.core.mail import EmailMessage
+from django.core.mail.backends.smtp import EmailBackend
+from django.db import models
+from django.utils import timezone
 
 
 class Mailbox(models.Model):
@@ -23,6 +26,15 @@ class Mailbox(models.Model):
     def __str__(self):
         return f"id: {self.id}"
 
+    def email_backend(self):
+        return EmailBackend(
+            host=self.host,
+            port=self.port,
+            username=self.login,
+            password=self.password,
+            use_tls=self.use_ssl,
+        )
+
 
 class Template(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -33,7 +45,7 @@ class Template(models.Model):
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"id: {self.id}, subject: {self.subject}"
+        return f"subject: {self.subject}"
 
 
 class Email(models.Model):
@@ -53,3 +65,19 @@ class Email(models.Model):
 
     def __str__(self):
         return f"id: {self.id}, {self.mailbox}"
+
+    def send_email(self, fail_silenty=False):
+        if self.mailbox.is_active:
+            EmailMessage(
+                subject=self.template.subject,
+                body=self.template.text,
+                from_email=self.mailbox.email_from,
+                to=self.to,
+                bcc=self.bcc,
+                connection=self.mailbox.email_backend(),
+                attachments=self.template.attachment,
+                cc=self.cc,
+                fail_silently=fail_silenty,
+            ).send()
+            self.send_date = timezone.now()
+            self.save()
