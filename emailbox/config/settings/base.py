@@ -113,3 +113,5 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny",
     ]
 }
+
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
