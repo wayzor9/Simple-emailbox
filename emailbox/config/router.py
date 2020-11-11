@@ -1,4 +1,5 @@
 from rest_framework import routers
+
 from notifications.views import MailboxViewset, TemplateViewset, EmailViewset
 
 router = routers.DefaultRouter()
