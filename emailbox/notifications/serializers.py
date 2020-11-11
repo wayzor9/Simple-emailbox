@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from rest_framework import serializers
 
 from .models import Mailbox, Template, Email
@@ -31,6 +33,10 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class EmailSerializer(serializers.ModelSerializer):
+    sent_date = serializers.DateTimeField(
+        default=serializers.CreateOnlyDefault(timezone.now)
+    )
+
     class Meta:
         model = Email
         fields = (
@@ -41,6 +47,7 @@ class EmailSerializer(serializers.ModelSerializer):
             "cc",
             "bcc",
             "reply_to",
+            "sent_date",
         )
 
     def create(self, validated_data):

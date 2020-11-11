@@ -111,7 +111,35 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
-    ]
+    ],
+    "DATETIME_INPUT_FORMATS": [
+        "%Y-%m-%d %H:%M",
+    ],
+    "DATETIME_FORMAT": "%Y-%m-%d %H:%M",
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
 }
 
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+
+LOG_PATH = os.path.join(BASE_DIR, "logs")
+
+LOGGING = {
+    "version": 1,
+    "loggers": {
+        "tasks": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+        }
+    },
+    "handlers": {
+        "file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_PATH, "email.log"),
+            "formatter": "simple",
+        }
+    },
+    "formatters": {
+        "simple": {"format": "{levelname} {asctime} {name} {mesagge}", "style": "{"}
+    },
+}
