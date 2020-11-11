@@ -12,7 +12,8 @@ The backend enables to send mails with customly configuered emailbox.
   - Celery 5.0.2
   - Django-filter 2.4.0
   - Django-environ 0.4.5
-  - (PostgreSQL) psycopg2-binary 2.8.6
+  - PostgreSQL 12.4
+  - psycopg2-binary 2.8.6
   - RabbitMq
   
 Clik [RabbitMq](https://www.rabbitmq.com/) to learn more about installation.
